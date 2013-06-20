@@ -19,8 +19,10 @@
 	
     <div style="z-index: 99; position:absolute; top:10px; right:10px; height:200px; width:300px; background: white; padding:10px;">
         <h2>What's your route?</h2>
-        <textarea id="route-description" rows=7 cols=40></textarea>
-        <button value="Submit" style="width:300px;" onclick="serialize();"></button>
+        <form>
+            <textarea id="route-description" rows=7 cols=40></textarea>
+            <input type="submit" label="Submit" style="width:300px;" onclick="serialize();"></input>
+        </form>
     </div>
 
     </div>
