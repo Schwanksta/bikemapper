@@ -1,3 +1,126 @@
-{% for p in path %}
-{{p.user}}
-{% endfor %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>What's your bike route?</title>
+
+	<link rel="stylesheet" href="/static/css/leaflet.css" />
+	<link rel="stylesheet" href="/static/css/leaflet.draw.css" />
+	
+	<!--[if lte IE 8]>
+		<link rel="stylesheet" href="/static/css/leaflet.ie.css" />
+		<link rel="stylesheet" href="/static/css/leaflet.draw.ie.css" />
+	<![endif]-->
+	<script src="/static/js/jquery-1.10.1.min.js"></script>
+	<script src="/static/js/leaflet.js"></script>
+	<script src="/static/js/leaflet.draw.js"></script>
+</head>
+<body>
+	<div id="map" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+	
+    <div style="z-index: 99; position:absolute; top:10px; right:10px; height:200px; width:300px; background: white; padding:10px;">
+        <h2>What's your route?</h2>
+        <textarea id="route-description" rows=7 cols=40></textarea>
+        <button value="Submit" style="width:300px;" onclick="serialize();"></button>
+    </div>
+
+    </div>
+
+	<script>
+	
+        var createLayer = function(version) {
+            var layerOptions = {
+                attribution: "Map data (c) <a href='http://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>",
+                subdomains: [
+                    'tiles1',
+                    'tiles2',
+                    'tiles3',
+                    'tiles4'
+                ]
+            }
+            var url = "http://{s}.latimes.com/quiet-la-" + version + "/{z}/{x}/{y}.png";
+            return new L.TileLayer(url, layerOptions);
+        }
+
+        var base = createLayer("0.3.0");
+
+		map = new L.Map('map', {layers: [base], center: new L.LatLng(34.03974,-118.25160), zoom: 12 });
+
+		var drawnItems = new L.FeatureGroup();
+		map.addLayer(drawnItems);
+
+		var drawControl = new L.Control.Draw({
+			draw: {
+				position: 'topleft',
+			},
+			edit: {
+				featureGroup: drawnItems
+			}
+		});
+		map.addControl(drawControl);
+
+		map.on('draw:created', function (e) {
+			var type = e.layerType,
+				layer = e.layer;
+
+			drawnItems.addLayer(layer);
+		});
+
+        // using jQuery
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+        
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        function sameOrigin(url) {
+            // test that a given url is a same-origin URL
+            // url could be relative or scheme relative or absolute
+            var host = document.location.host; // host + port
+            var protocol = document.location.protocol;
+            var sr_origin = '//' + host;
+            var origin = protocol + sr_origin;
+            // Allow absolute or scheme relative URLs to same origin
+            return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                // or any other URL that isn't scheme relative or absolute i.e relative.
+                !(/^(\/\/|http:|https:).*/.test(url));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+                    // Send the token to same-origin, relative URLs only.
+                    // Send the token only if the method warrants CSRF protection
+                    // Using the CSRFToken value acquired earlier
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        var serialize = function() {
+            var postData = {
+                json: JSON.stringify(drawnItems.getLayers()[0].toGeoJSON()),
+                comment: document.getElementById('route-description').value
+            };
+
+            $.post('/submit/', postData);
+            alert("Thanks!");
+        }
+		
+	</script>
+</body>
+</html>
+
