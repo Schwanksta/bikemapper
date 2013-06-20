@@ -67,6 +67,16 @@
 			drawnItems.addLayer(layer);
 		});
 
+        var serialize = function() {
+            var postData = {
+                json: JSON.stringify(drawnItems.getLayers()[0].toGeoJSON()),
+                comment: document.getElementById('route-description').value
+            };
+
+            $.post('/submit/', postData);
+            alert("Thanks!");
+        }
+
         // using jQuery
         function getCookie(name) {
             var cookieValue = null;
@@ -112,15 +122,7 @@
                 }
             }
         });
-        var serialize = function() {
-            var postData = {
-                json: JSON.stringify(drawnItems.getLayers()[0].toGeoJSON()),
-                comment: document.getElementById('route-description').value
-            };
 
-            $.post('/submit/', postData);
-            alert("Thanks!");
-        }
 		
 	</script>
 </body>
