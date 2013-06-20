@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.staticfiles',
     'django.contrib.contenttypes',
+    'django.contrib.gis',
     'django.contrib.admin',
     'app_models'
 ]
