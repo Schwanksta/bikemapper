@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.gis.db import models
 
 class BikePath(models.Model):
@@ -13,6 +14,6 @@ class BikePath(models.Model):
         return u"%s @ %s" % (self.user, self.date_time)
     
     def save(self, *args, **kwargs):
-        if not date_time:
-            date_time = datetime.now()
+        if not self.date_time:
+            self.date_time = datetime.now()
         super(BikePath, self).save(*args, **kwargs)
