@@ -5,6 +5,35 @@
 
 	<link rel="stylesheet" href="/static/css/leaflet.css" />
 	<link rel="stylesheet" href="/static/css/leaflet.draw.css" />
+    <style type="text/css">
+        body {
+            font: 13.5px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+        }
+        .intro em {
+            font-weight: bold;
+            font-style: normal;
+        }
+        .intro {
+            margin-top:2px;
+        }
+        #map {
+            position: absolute;
+            top: 0px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #input {
+            z-index: 99;
+            position:absolute;
+            top:10px; 
+            right:10px;
+            height:420px;
+            width:300px;
+            background: white;
+            padding:10px;
+        }
+    </style>
 	
 	<!--[if lte IE 8]>
 		<link rel="stylesheet" href="/static/css/leaflet.ie.css" />
@@ -15,15 +44,23 @@
 	<script src="/static/js/leaflet.draw.js"></script>
 </head>
 <body>
-	<div id="map" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
-	
-    <div style="z-index: 99; position:absolute; top:10px; right:10px; height:200px; width:300px; background: white; padding:10px;">
-        <h2>What's your route?</h2>
+	<div id="map"></div>
+    <div id="input">
+        <h1>
+            Map your bike route
+        </h1>
+        <p class="intro">
+            <em>Biking in L.A. can be a bit of a mess.</em> Bike lanes disappear and re-appear at will, shoulders
+            squeeze into tiny strips between parked cars and speeding cars, and the pavement can be &hellip; less than smooth.
+            Try inputting one of your preferred bike paths, and describe why you use it in the box.
+        </p>
+        <h2>Describe your route</h2>
         <form>
             <textarea id="route-description" rows=7 cols=40></textarea>
             <input type="submit" label="Submit" style="width:300px;" onclick="serialize();"></input>
         </form>
-    </div>
+    </div>	
+
 
 	<script type="text/javascript">
 	
@@ -51,6 +88,10 @@
 		var drawControl = new L.Control.Draw({
 			draw: {
 				position: 'topleft',
+                polygon: false,
+                circle: false,
+                marker: false,
+                rectangle: false 
 			},
 			edit: {
 				featureGroup: drawnItems
