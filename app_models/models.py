@@ -5,7 +5,7 @@ class BikePath(models.Model):
     user = models.CharField(max_length=255)
     comment = models.TextField()
     date_time = models.DateTimeField()
-    path = models.LineStringField(srid=4326)
+    path = models.MultiLineStringField(srid=4326)
     approved = models.BooleanField(default=False)
 
     objects= models.GeoManager()

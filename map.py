@@ -7,7 +7,7 @@ d(DEBUG = True,
     STATIC_URL = STATIC_URL,
     INSTALLED_APPS = INSTALLED_APPS)
 
-from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.geos import GEOSGeometry, MultiLineString, LineString
 from django.contrib import admin
 admin.autodiscover()
 d.urlpatterns += d.patterns('', d.url(r'^admin/', include(admin.site.urls)))
@@ -26,10 +26,11 @@ def submit(request):
     data = request.POST
     user = "test@test.com"
     geom = GEOSGeometry(data['json'])
+    path = MultiLineString([LineString(line) for line in geom.tuple])
     comment = data['comment']
     bp = BikePath(
         user=user,
-        path=geom,
+        path=path,
         comment=comment
     )
     bp.save()

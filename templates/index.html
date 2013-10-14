@@ -60,7 +60,7 @@
         <h2>Describe your route</h2>
         <form>
             <textarea id="route-description" rows=7 cols=40></textarea>
-            <input type="submit" label="Submit" style="width:300px;" onclick="serialize();"></input>
+            <button id="submit-button" style="width:300px;">Submit</button>
         </form>
     </div>	
 
@@ -109,15 +109,15 @@
 			drawnItems.addLayer(layer);
 		});
 
-        var serialize = function() {
+        $("#submit-button").on("click", function(e) {
+            e.preventDefault();
             var postData = {
-                json: JSON.stringify(drawnItems.getLayers()[0].toGeoJSON()),
+                json: JSON.stringify(drawnItems.toGeoJSON()),
                 comment: document.getElementById('route-description').value
             };
-
             $.post('/submit/', postData);
             alert("Thanks!");
-        }
+        });
 
         // using jQuery
         function getCookie(name) {
