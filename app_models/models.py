@@ -3,6 +3,12 @@ from django.contrib.gis.db import models
 
 class BikePath(models.Model):
     user = models.CharField(max_length=255)
+    RATING_CHOICES = (
+        (1,'Good'),
+        (2,'Usable'),
+        (3,'Bad'),
+    )
+    rating = models.IntegerField(choices=RATING_CHOICES)
     comment = models.TextField()
     date_time = models.DateTimeField()
     path = models.MultiLineStringField(srid=4326)
