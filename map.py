@@ -26,19 +26,16 @@ def index(request):
 def submit(request):
     if request.method != 'POST':
         return d.Http404
-    try:
-        data = request.POST
-        user = "test@test.com"
-        geom = GEOSGeometry(data.get('json'))
-        path = MultiLineString([LineString(line) for line in geom.tuple])
-        comment = data.get('comment')
-        bp = BikePath(
-            user=user,
-            rating=int(data.get('rating')),
-            path=path,
-            comment=comment
-        )
-        bp.save()
-    except:
-        return d.Http500
+    data = request.POST
+    user = "test@test.com"
+    geom = GEOSGeometry(data.get('json'))
+    path = MultiLineString([LineString(line) for line in geom.tuple])
+    comment = data.get('comment')
+    bp = BikePath(
+        user=user,
+        rating=int(data.get('rating')),
+        path=path,
+        comment=comment
+    )
+    bp.save()
     return d.HttpResponse("OK")
